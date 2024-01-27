@@ -1,0 +1,13 @@
+spring:
+  rabbitmq:
+    host: 172.28.0.1 # 你的虚拟机IP
+    port: 5672 # 端口
+    virtual-host: / # 虚拟主机
+    username: ZZGEDA # 用户名
+    password: zZ-szshyjbz16D # 密码
+    listener:
+      simple:
+        prefetch: 1 # 每次只能获取一条消息，处理完成才能获取下一个消息
+        #结果是监听器1的处理速度明显快于监听器2的速度
+        #因为监听器1消费完一个消息之后 监听器2还没有消费完数据
+
