@@ -14,7 +14,6 @@ public class FanoutConfig {
      *
      * 声明交换机
      *
-     * @param :
      * @return []
      */
 
@@ -27,7 +26,6 @@ public class FanoutConfig {
      *
      * 第一个队列
      *
-     * @param :
      * @return []
      */
 
