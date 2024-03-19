@@ -3,7 +3,7 @@ package com.example.consumer.listener;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class TopicQueueListener {
     @RabbitListener(queues = "direct.queue1")
     public void listenTopicQueue1(String msg){

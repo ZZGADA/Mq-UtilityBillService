@@ -4,7 +4,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class DirectExchangeListener {
     @RabbitListener(queues = "direct.queue1")
     public void listenDirectQueue1(String msg) {

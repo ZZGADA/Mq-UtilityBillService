@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
 
-@Component
+//@Component
 public class WorkQueueListener {
 
     @RabbitListener(queues = "work.queue")
