@@ -1,6 +1,6 @@
 package com.example.consumer.controller;
 
-import com.example.consumer.service.UtilityBillsService;
+import com.example.consumer.service.impl.UtilityBillsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

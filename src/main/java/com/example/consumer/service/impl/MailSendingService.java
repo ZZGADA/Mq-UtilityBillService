@@ -1,8 +1,9 @@
-package com.example.consumer.service;
+package com.example.consumer.service.impl;
 
 import com.example.consumer.pojo.Mail;
 import com.example.consumer.pojo.entity.MailEnum;
 import com.example.consumer.pojo.entity.UtilityBillEnum;
+import com.example.consumer.service.IMailSendingService;
 import com.example.consumer.utils.MailContextUtil;
 import com.example.consumer.utils.MailUtil;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +13,12 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class MailSendingService {
+public class MailSendingService implements IMailSendingService {
 
     private final MailUtil mailUtil;
     private final MailContextUtil mailContextUtil;
 
-
+    @Override
     public void sendMailFormQQMail(String recipient ,String bill){
         Mail mail = new Mail();
         // 接收者

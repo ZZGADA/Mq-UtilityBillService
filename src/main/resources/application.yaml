@@ -2,22 +2,44 @@ spring:
   profiles:
     active: default, dev
 
+  # 数据源
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.database}?zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=false&createDatabaseIfNotExist=true
     username: ${mysql.username}
     password: ${mysql.password}
 
+  # rabbitMq
   rabbitmq:
+    host: ${rabbitMq.host} # 你的虚拟机IP
+    port: ${rabbitMq.port} # 端口
+    virtual-host: ${rabbitMq.virtual-host} # 虚拟主机
+    username: ${rabbitMq.username} # 用户名
+    password: ${rabbitMq.password} # 密码
     listener:
       simple:
         prefetch: 1 # 每次只能获取一条消息，处理完成才能获取下一个消息
         #结果是监听器1的处理速度明显快于监听器2的速度
         #因为监听器1消费完一个消息之后 监听器2还没有消费完数据
+  redis:
+    enable: true
+    jedis:
+      host: ${jedis.host}
+      port: ${jedis.port}
+      password: ${jedis.password}
+      database: ${jedis.database}
+      maxIdle: ${jedis.maxIdle}
+      minIdle: ${jedis.minIdle}
+      maxTotal: ${jedis.maxTotal}
+      maxWaitMillis: ${jedis.maxWaitMillis}
+      testOnBorrow: ${jedis.testOnBorrow}
+      testOnReturn: ${jedis.testOnReturn}
+
+  # SMTP Mail
   mail:
     host: smtp.qq.com #SMTP服务器地址   qq邮箱服务器
     username: 1293177585@qq.com #登陆账号  发送方邮箱
-    password: zrfndvhlsxfsbabe #登陆密码（或授权码）
+    password: rpogcrobehvrjhjf #登陆密码（或授权码）
     properties:
       mail:
         smtp:
@@ -41,7 +63,7 @@ mybatis-plus:
     #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射 address_book ---> addressBook
     map-underscore-to-camel-case: true
       #配置Mapper映射文件
-    mapper-locations: classpath:/mappers/*.xml
+#    mapper-locations: classpath:/mappers/*.xml
 #  global-config:
 #    db-config:
 #      # 全局 逻辑删除配置
@@ -49,6 +71,12 @@ mybatis-plus:
 #      logic-delete-value: 1
 #      logic-not-delete-value: 0
 #      id-type: auto
+
+
+# 设置 MyBatis Plus 日志级别为 DEBUG
+logging:
+  level:
+    com.example.consumer.mapper: debug
 
 
 #最大连接数
@@ -64,3 +92,4 @@ http:
   socketTimeout: 10000
   #空闲永久连接检查间隔，官方推荐使用这个来检查永久链接的可用性，而不推荐每次请求的时候才去检查
   validateAfterInactivity: 2000
+
