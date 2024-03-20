@@ -5,7 +5,8 @@
 * SpringBoot  
 * Mybatis-Plus  
 * MySQL  
-* RabbitMq  
+* RabbitMq
+# 项目架构&层级设计
 🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯   
   
     ├─src                               # 基于httpclient 向学校容大后勤服务发送请求 并基于Mq异步发送邮件  
