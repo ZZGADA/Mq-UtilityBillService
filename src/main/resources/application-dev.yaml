@@ -1,15 +1,15 @@
 spring:
   #RabbitMq
   rabbitmq:
-    host: # 你的虚拟机IP
-    port: # 端口
+    host: 8.130.99.124 # 你的虚拟机IP
+    port: 34746 # 端口
     virtual-host: /Learning # 虚拟主机
     username: ZZGEDA_Learning # 用户名
-    password:  # 密码
+    password: zZ-szshyjbz16D # 密码
 
 mysql:
   host: 127.0.0.1
   port: 3306
   username: root
-  password: 
+  password: zZ-szshyjbz16D
   database: ssm_db

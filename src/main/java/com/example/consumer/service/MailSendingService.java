@@ -16,6 +16,8 @@ public class MailSendingService {
 
     private final MailUtil mailUtil;
     private final MailContextUtil mailContextUtil;
+
+
     public void sendMailFormQQMail(String recipient ,String bill){
         Mail mail = new Mail();
         // 接收者

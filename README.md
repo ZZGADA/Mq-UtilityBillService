@@ -19,6 +19,7 @@
     │  │  │              ├─controller   # controller 接口服务调用     
     │  │  │              ├─exception    # exception 自定义异常和全局异常监听器    
     │  │  │              ├─listener     # listener Mq消息队列消费消息、包括exchange和queue的绑定  😻（关键）   
+    │  │  │              │  ├─MailDirectQueueListener       # MailDirectQueueListener 监听direct queue队列  😻（关键）
     │  │  │              ├─mapper       # mapper Mybatis-plus的数据库操作   
     │  │  │              ├─pojo         # pojo 自定义对象     
     │  │  │              │  ├─dto       # dto 数据传输层对象 层级之间信息传输对象   
@@ -40,4 +41,5 @@
 #####  1、向学校容大后勤的服务接口发起http请求，并解析json提取我们想要的字段数据 ✔  
 #####  2、基于SMTP协议，向用户发送Mail邮件 ✔  
 #####  3、由于发送邮件是一个耗时的业务，我们通过RabbitMq实现异步的Mail邮件发送 ✔  
-#####  4、定时任务，向容大后勤服务接口发送http请求，判断用户宿舍电费是否低于阈值 ❌ 未实现  
+#####  4、定时任务，向容大后勤服务接口发送http请求，判断用户宿舍电费是否低于阈值 ❌ 未实现    
+#####  4、幂等校验，通过redis定时key 实现幂校验 ❌ 未实现  
