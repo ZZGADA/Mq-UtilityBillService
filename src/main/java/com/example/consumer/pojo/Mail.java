@@ -14,4 +14,6 @@ public class Mail implements Serializable {
     private String recipient;//邮件接收人
     private String subject; //邮件主题
     private String content; //邮件内容
+    private String uuid;  //注册登录唯一uuid
+    private String userName; //登录注册人
 }

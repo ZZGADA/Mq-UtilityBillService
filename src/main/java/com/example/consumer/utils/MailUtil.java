@@ -1,28 +1,42 @@
 package com.example.consumer.utils;
 
 import com.example.consumer.pojo.Mail;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class MailUtil {
     @Value("${spring.mail.username}")
     private String sender; //邮件发送者
+    @Value("${now.host.ip}")
+    private String ip;//连接地址ip
+
+    @Value("${server.port}")
+    private String port;
 
     @Resource
     private JavaMailSender javaMailSender;
+    private final TemplateEngine templateEngine;
+
+
 
     /**
      * 发送文本邮件
      * 一些基础信息就直接静态配置了
      *
-     * @param mail
+     * @param mail：邮件信息
      */
     public void sendSimpleMail(Mail mail) {
         try {
@@ -41,16 +55,22 @@ public class MailUtil {
         }
     }
 
-
-
-    //复杂邮件
-//    MimeMessage mimeMessage = mailSender.createMimeMessage();
-//    MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-//        messageHelper.setFrom("jiuyue@163.com");
-//        messageHelper.setTo("September@qq.com");
-//        messageHelper.setSubject("BugBugBug");
-//        messageHelper.setText("一杯茶，一根烟，一个Bug改一天！");
-//        messageHelper.addInline("bug.gif", new File("xx/xx/bug.gif"));
-//        messageHelper.addAttachment("bug.docx", new File("xx/xx/bug.docx"));
-//        mailSender.send(mimeMessage);
+    public void sendHtmlMail(Mail mail) {
+//        复杂邮件
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        System.out.println(mail);
+        try {
+            mimeMessage.setFrom(sender);
+            mimeMessage.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(mail.getRecipient()));
+            mimeMessage.setSubject(mail.getSubject());
+            Context context = new Context();
+            context.setVariable("userName",mail.getUserName());
+            context.setVariable("href",String.format("http://%s:%s/utilityBill/userSignUp?signUpUUUID=%s",ip,port,mail.getUuid()));
+            mimeMessage.setText(templateEngine.process("userSignUp.html", context));
+            javaMailSender.send(mimeMessage);
+        } catch (Exception e) {
+            log.error("html邮件发送失败 {}", e.getMessage());
+            throw new RuntimeException("邮件发送失败");
+        }
+    }
 }

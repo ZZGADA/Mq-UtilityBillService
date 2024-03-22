@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>邮件认证</title>
+</head>
+<body>
+
+<h3 th:text="${userName}">你好：</h3>
+<p>请点击下方链接完成注册校验</p>
+<br>
+
+<a th:href="@{${href}}">验证</a>
+
+
+
+
+</body>
+</html>

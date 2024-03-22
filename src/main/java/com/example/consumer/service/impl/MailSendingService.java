@@ -19,12 +19,23 @@ public class MailSendingService implements IMailSendingService {
     private final MailContextUtil mailContextUtil;
 
     @Override
-    public void sendMailFormQQMail(String recipient ,String bill){
+    public void sendSimpleMailFormQQMail(String recipient ,String bill){
         Mail mail = new Mail();
-        // 接收者
+        // 接收者邮箱
         mail.setRecipient(recipient);
         mail.setSubject(MailEnum.MailSubjectTest.getContent());
         mail.setContent(mailContextUtil.getFullMailContextMessage(UtilityBillEnum.class,bill));
         mailUtil.sendSimpleMail(mail);
+    }
+
+    @Override
+    public void sendHtmlMailFormQQMail(String recipient, String userName, String uuid) {
+        Mail mail = new Mail();
+        // 接收者邮箱
+        mail.setRecipient(recipient);
+        mail.setSubject(MailEnum.MailSubjectTest.getContent());
+        mail.setUserName(userName);
+        mail.setUuid(uuid);
+        mailUtil.sendHtmlMail(mail);
     }
 }

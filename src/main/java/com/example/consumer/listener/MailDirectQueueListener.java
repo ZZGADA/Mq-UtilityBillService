@@ -37,7 +37,7 @@ public class MailDirectQueueListener {
         log.info(messageProperties.toString());
         log.info(__TypeId__);
         //有了这个type_id 我就通过反射将我的body中的数据转换成目标数据类型
-        mailSendingService.sendMailFormQQMail(mailSendingMqDTO.getRecipient(), mailSendingMqDTO.getDormitoryBill());
+        mailSendingService.sendSimpleMailFormQQMail(mailSendingMqDTO.getRecipient(), mailSendingMqDTO.getDormitoryBill());
         log.info("=====>  邮件发送成功");
     }
 }

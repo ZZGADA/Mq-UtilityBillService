@@ -9,7 +9,7 @@
    -->
 <mapper namespace="com.example.consumer.mapper.UtilityBillUserMapper">
 
-    <select id="getAllUtilityBillUser" resultType="com.example.consumer.pojo.dto.UtilityBillUserLocationDTO">
+    <select id="getAllUtilityBillUser" resultType="com.example.consumer.pojo.dto.UtilityBillUserDTOLocationDTO">
         select ubs.mail,
                ubs.user_name,
                ubs.dormitory_id,
@@ -21,7 +21,7 @@
         where ubs.if_deleted = 0 ;
     </select>
 
-    <select id="getDormitoryRoomIdsGroupBy" resultType="com.example.consumer.pojo.dto.UtilityBillUserLocationDTO">
+    <select id="getDormitoryRoomIdsGroupBy" resultType="com.example.consumer.pojo.dto.UtilityBillUserDTOLocationDTO">
         select ubs.dormitory_id,
                ubs.dormitory_room_id,
                ubs.university_code_id,

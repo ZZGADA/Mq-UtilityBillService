@@ -4,21 +4,22 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.example.consumer.pojo.dto.UtilityBillUserLocationDTO;
-import com.example.consumer.pojo.po.UtilityBillUserPO;
+import com.example.consumer.pojo.dto.UtilityBillUserDTOLocationDTO;
+import com.example.consumer.pojo.dto.UtilityBillUserDTO;
+import com.example.consumer.pojo.po.UtilityBillUserDTOPO;
 
 import java.util.List;
 
-public interface UtilityBillUserMapper extends BaseMapper<UtilityBillUserPO> {
+public interface UtilityBillUserMapper extends BaseMapper<UtilityBillUserDTOPO> {
 
-    default UtilityBillUserLocationDTO getUtilityBillUserExceptMail(String mail){
-        LambdaQueryWrapper<UtilityBillUserPO> wrapper = Wrappers.lambdaQuery();
-        wrapper.select(UtilityBillUserPO::getUserName,
-                UtilityBillUserPO::getDormitoryId,
-                UtilityBillUserPO::getDormitoryRoomId,
-                UtilityBillUserPO::getUniversityCodeId);
-        wrapper.eq(UtilityBillUserPO::getIfDeleted,0);
-        wrapper.eq(UtilityBillUserPO::getMail,mail);
+    default UtilityBillUserDTO getUtilityBillUserExceptMail(String mail){
+        LambdaQueryWrapper<UtilityBillUserDTOPO> wrapper = Wrappers.lambdaQuery();
+        wrapper.select(UtilityBillUserDTOPO::getUserName,
+                UtilityBillUserDTOPO::getDormitoryId,
+                UtilityBillUserDTOPO::getDormitoryRoomId,
+                UtilityBillUserDTOPO::getUniversityCodeId);
+        wrapper.eq(UtilityBillUserDTOPO::getIfDeleted,0);
+        wrapper.eq(UtilityBillUserDTOPO::getMail,mail);
         // 返回父类
         return this.selectOne(wrapper);
     }
@@ -28,7 +29,7 @@ public interface UtilityBillUserMapper extends BaseMapper<UtilityBillUserPO> {
      *
      */
 
-    List<UtilityBillUserLocationDTO> getAllUtilityBillUser();
+    List<UtilityBillUserDTOLocationDTO> getAllUtilityBillUser();
 
-    List<UtilityBillUserLocationDTO> getDormitoryRoomIdsGroupBy();
+    List<UtilityBillUserDTOLocationDTO> getDormitoryRoomIdsGroupBy();
 }

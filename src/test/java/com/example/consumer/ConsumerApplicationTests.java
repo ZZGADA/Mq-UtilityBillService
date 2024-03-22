@@ -20,10 +20,7 @@ class ConsumerApplicationTests {
 
     @Resource //依赖注入 与@Autowired一致 @Resource默认按byName自动注入
     private MailUtil mailUtil;
-//    @Autowired
-//    private HttpUtil httpUtil;
-//    @Autowired
-//    private MailContextUtil mailContextUtil;
+
     @Autowired
     private UtilityBillsService utilityBillsService;
 //    private static final String cookie = "shiroJID=341b57d5-d882-4c9b-acc7-443f81d0b6a4";
@@ -31,7 +28,7 @@ class ConsumerApplicationTests {
     //接收人
     private static final String recipient = "leon.bwchen@foxmail.com";
 
-//    @Test
+    @Test
     void MailSending(String bills) {
         Mail mail = new Mail();
 //        int code = (int) ((Math.random() * 9 + 1) * 100000);
@@ -46,7 +43,7 @@ class ConsumerApplicationTests {
         mailUtil.sendSimpleMail(mail);
     }
 
-//    @Test
+    @Test
     void queryAllUserSendMessage(){
         utilityBillsService.queryAllUserSendMessage();
     }
@@ -55,6 +52,16 @@ class ConsumerApplicationTests {
     @Test
     void scheduleTask(){
         utilityBillsService.scheduleTask();
+    }
+
+    @Test
+    void LongParse(){
+        float l = Float.parseFloat("78.8");
+        if(l<50.0f){
+            System.out.println("iopdpdp");
+        }else{
+            System.out.println("llsosopp");
+        }
     }
 }
 

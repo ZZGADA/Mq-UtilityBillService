@@ -4,8 +4,9 @@ import com.example.consumer.mapper.UtilityBillMapper;
 import com.example.consumer.mapper.UtilityBillUserMapper;
 import com.example.consumer.pojo.dto.MailSendingMqDTO;
 import com.example.consumer.pojo.dto.UtilityBillDTO;
-import com.example.consumer.pojo.dto.UtilityBillUserLocationDTO;
+import com.example.consumer.pojo.dto.UtilityBillUserDTOLocationDTO;
 import com.example.consumer.pojo.entity.PostRequestEnum;
+import com.example.consumer.pojo.dto.UtilityBillUserDTO;
 import com.example.consumer.service.IUtilityBillsService;
 import com.example.consumer.utils.HttpUtil;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,7 +37,7 @@ public class UtilityBillsService implements IUtilityBillsService {
     private final RabbitTemplate rabbitTemplate;
     private static final String utilityBillUrl = "https://application.xiaofubao.com/app/electric/queryISIMSRoomSurplus";
     private final JedisPool jedisPool;
-    private final Long utilityBillThreshold=50L;
+    private final Float utilityBillThreshold=50.0f;
 
 
     /**
@@ -52,18 +53,18 @@ public class UtilityBillsService implements IUtilityBillsService {
         // 如果不用https会发生重定型 然后需要手动重定向发送请求
 
 
-        UtilityBillUserLocationDTO utilityBillUserExceptMail = utilityBillUserMapper.getUtilityBillUserExceptMail(userRecipient);
+        UtilityBillUserDTO utilityBillUserDTOExceptMail = utilityBillUserMapper.getUtilityBillUserExceptMail(userRecipient);
         // 为空则返回
-        if (Objects.isNull(utilityBillUserExceptMail)) {
+        if (Objects.isNull(utilityBillUserDTOExceptMail)) {
             return "";
         } else {
             utilityBillDTO = new UtilityBillDTO();
         }
 
-        utilityBillDTO.setAreaId(utilityBillUserExceptMail.getUniversityCodeId());
-        utilityBillDTO.setBuildingCode(utilityBillUserExceptMail.getDormitoryId());
-        utilityBillDTO.setFloorCode(utilityBillUserExceptMail.getDormitoryRoomId() / 100);
-        utilityBillDTO.setRoomCode(utilityBillUserExceptMail.getDormitoryRoomId());
+        utilityBillDTO.setAreaId(utilityBillUserDTOExceptMail.getUniversityCodeId());
+        utilityBillDTO.setBuildingCode(utilityBillUserDTOExceptMail.getDormitoryId());
+        utilityBillDTO.setFloorCode(utilityBillUserDTOExceptMail.getDormitoryRoomId() / 100);
+        utilityBillDTO.setRoomCode(utilityBillUserDTOExceptMail.getDormitoryRoomId());
         utilityBillDTO.setYmId("");
         utilityBillDTO.setPlatform("");
 
@@ -109,24 +110,24 @@ public class UtilityBillsService implements IUtilityBillsService {
 
     // 定时任务 每天下午14点执行
     @Override
-    @Scheduled(cron = "0 0 14 * * ?")
+    @Scheduled(cron = "0 30 14 * * ?")
     public void queryAllUserSendMessage() {
         // 查询所有用户 和 查询所有用户的unique宿舍号 减少请求发送
         String bill;
 
-        List<UtilityBillUserLocationDTO> allUtilityBillUser = utilityBillUserMapper.getAllUtilityBillUser();
-        List<UtilityBillUserLocationDTO> dormitoryRoomIdsGroupBy = utilityBillUserMapper.getDormitoryRoomIdsGroupBy();
+        List<UtilityBillUserDTOLocationDTO> allUtilityBillUser = utilityBillUserMapper.getAllUtilityBillUser();
+        List<UtilityBillUserDTOLocationDTO> dormitoryRoomIdsGroupBy = utilityBillUserMapper.getDormitoryRoomIdsGroupBy();
         Map<String, String> headerSchedule = getHeaderSchedule();
         StringBuilder dormitoryLocationKey = new StringBuilder();
         UtilityBillDTO utilityBillDTO = new UtilityBillDTO();
         utilityBillDTO.setYmId("");
         utilityBillDTO.setPlatform("");
 
-        // 从线程池中申请资源
+        // 从线程池中申请资源  TODO:其实没有必要使用redis 直接使用Map即可 但考虑对查询数据进行持久化 使用redis
         Jedis redisResource = jedisPool.getResource();
         try{
             // 循环获得宿舍号的剩余电费 并将学校号_宿舍号为key 将电费bill为value 存入redis
-            for (UtilityBillUserLocationDTO dormitoryItem : dormitoryRoomIdsGroupBy) {
+            for (UtilityBillUserDTOLocationDTO dormitoryItem : dormitoryRoomIdsGroupBy) {
                 log.info(dormitoryItem.toString());
                 // 转换成DTO对象
                 utilityBillDTO.setAreaId(dormitoryItem.getUniversityCodeId());
@@ -158,7 +159,7 @@ public class UtilityBillsService implements IUtilityBillsService {
 
             log.info("https请求发送成功 以下是发送qqMail");
             // 遍历学生信息 向redis中查询上面的key (学校号_宿舍号) 获得bill数据 异步发送qq邮箱
-            for (UtilityBillUserLocationDTO userItem : allUtilityBillUser){
+            for (UtilityBillUserDTOLocationDTO userItem : allUtilityBillUser){
                 log.info("=====> 待发送邮件信息");
                 log.info(userItem.toString());
                 dormitoryLocationKey.append(userItem.getUniversityCodeId()).
@@ -168,13 +169,15 @@ public class UtilityBillsService implements IUtilityBillsService {
                 bill = redisResource.get(dormitoryLocationKey.toString());
                 if (!bill.isEmpty()) {
                     //如果小于水电费阈值：50就发送短信，否则不发
-                    if(Long.parseLong(bill)<this.utilityBillThreshold) {
+                    if(Float.parseFloat(bill)<this.utilityBillThreshold) {
                         // lambda 传入一个自定义方法 这种使用就可以算作是回调函数了
                         rabbitTemplate.convertAndSend("mail.direct", "mail", new MailSendingMqDTO(userItem.getMail(), bill), (message -> {
                             message.getMessageProperties().setMessageId(userItem.getMail());
                             return message;
                         }));
+                        log.info("<===== Mq异步消息发送");
                     }
+                    log.info(String.format("<===== 用户%s无须发送",userItem.getUserName()));
                 }
                 // 重置 StringBuilder
                 dormitoryLocationKey.setLength(0);
@@ -189,7 +192,7 @@ public class UtilityBillsService implements IUtilityBillsService {
 
     }
 
-    @Scheduled(cron = "*/5 * * * * *")
+//    @Scheduled(cron = "*/5 * * * * *")
     public  void scheduleTask(){
         System.out.println("test test test test test test test test ");
         System.out.println(Thread.currentThread().getName());
