@@ -1,7 +1,7 @@
 server:
   port: 18081
 rabbitmq:
-  host: 172.19.38.4 # 你的虚拟机IP
+  host:  # 你的虚拟机IP
   port: 34746 # 端口
   virtual-host: /Learning # 虚拟主机
   username: ZZGEDA_Learning # 用户名
@@ -9,7 +9,7 @@ rabbitmq:
 
 
 mysql:
-  host: 172.19.38.4 #生产环境的host
+  host:  #生产环境的host
   port: 33170 #生产环境的port
   username: root
   password: zZ-szshyjbz16D #myal密码
@@ -17,9 +17,9 @@ mysql:
 
 
 jedis:
-  host: 8.130.99.124
+  host: 
   port: 36689
-  password: zZ-szshyjbz16D
+  password: 
   database: 0    #redis数据库的索引号
   maxIdle: 100  #连接池最大空闲数
   minIdle: 0  #连接池最小空闲数
