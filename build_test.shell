@@ -3,6 +3,5 @@
 # 获取当前脚本所在的目录
 script_dir=$(dirname "$(realpath "$0")")
 echo "当前脚本所在目录: $script_dir"
-cd script_dir
 # 执行 mvn package 命令
 mvn package
